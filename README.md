@@ -1,2 +1,2 @@
-# autonomous-rc-car
+# Autonomous RC Car
 Autonomous rc car using neural networks
