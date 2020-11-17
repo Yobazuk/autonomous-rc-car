@@ -5,8 +5,15 @@ Autonomous rc car using neural networks
 
 ### Table Of Contents
 - [Description](#description)
+- [Usage](#usage)
 
 ---
 
 ## Description
 This is an autonomous rc car using neural networks
+
+## Usage
+```python
+car = AutonomousCar()
+car.drive()
+```
