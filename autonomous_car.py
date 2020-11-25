@@ -56,6 +56,7 @@ class AutonomousCar:
         try:
             while True:
                 self.sensor_distance = self.ultrasonic_sensor.measure_distance()
+                print('Measured distance = %.1f cm', self.sensor_distance)
         except KeyboardInterrupt:
             print('Ultrasonic sensor stopped')
             self.ultrasonic_sensor.exit()
