@@ -1,4 +1,4 @@
-from ultrasonic_sensor import UltrasonicSensor
+from components.ultrasonic_sensor import UltrasonicSensor
 from time import sleep
 
 

@@ -6,8 +6,8 @@ class Joystick:
     def __init__(self, joystick_number=0):
 
         self.joystick = joystick_number
-        self._buttons = {'x': 0, 'o': 0, 't': 0, 's': 0, 'L1': 0, 'R1': 0, 'L2': 0, 'R2': 0, 'share': 0, 'options': 0,
-                        'axis1': 0., 'axis2': 0., 'axis3': 0., 'axis4': 0.}
+        self._buttons = {'a': 0, 'b': 0, 'x': 0, 'y': 0, 'L1': 0, 'R1': 0, 'L2': 0, 'R2': 0, 'share': 0, 'options': 0,
+                         'axis1': 0., 'axis2': 0., 'axis3': 0., 'axis4': 0.}
         self._axis = [0., 0., 0., 0., 0., 0.]
 
         self.__setup__()

@@ -1,6 +1,5 @@
-from motors import Motors
-from joystick import Joystick
-from time import sleep
+from components.motors import Motors
+from components.joystick import Joystick
 
 
 def main():

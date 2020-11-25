@@ -100,19 +100,3 @@ class Motors:
         elif value < minimum:
             return minimum
         return value
-
-
-'''
-def main():
-    motors = Motors(25, 24, 23, 22, 17, 27)
-    motors.start()
-    motors.move(0.6, 0, 2)
-    motors.stop(2)
-    motors.move(-0.5, 0.2, 2)
-    motors.stop(2)
-    motors.exit()
-
-
-if __name__ == '__main__':
-    main()
-'''
