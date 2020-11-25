@@ -58,7 +58,8 @@ class Motors:
 
     @staticmethod
     def exit():
-        GPIO.cleanup()
+        pass
+        # GPIO.cleanup()
 
     def start(self):
         self._motor1.start()

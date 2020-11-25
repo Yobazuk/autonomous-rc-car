@@ -19,7 +19,8 @@ class UltrasonicSensor:
 
     @staticmethod
     def exit():
-        GPIO.cleanup()
+        pass
+        # GPIO.cleanup()
 
     def measure_distance(self):
 

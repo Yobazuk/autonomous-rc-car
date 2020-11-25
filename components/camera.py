@@ -71,3 +71,7 @@ class Camera:
         cap.release()
         out.release()
         cv2.destroyAllWindows()
+
+    @staticmethod
+    def exit():
+        cv2.destroyAllWindows()

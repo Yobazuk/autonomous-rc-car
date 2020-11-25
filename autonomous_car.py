@@ -29,6 +29,7 @@ class AutonomousCar:
         start_new_thread(self.drive_motors, ())
 
     def drive_motors(self):
+        print('driving...')
         self.motors.start()
         drive = True
         try:
@@ -48,6 +49,7 @@ class AutonomousCar:
             self.motors.exit()
 
     def get_joystick_buttons(self):
+        print('getting joystick buttons...')
         try:
             while True:
                 self.joystick_values = self.joystick.get_buttons()
@@ -55,6 +57,7 @@ class AutonomousCar:
             print('Joystick stopped')
 
     def measure_distance(self):
+        print('measuring distance...')
         try:
             while True:
                 self.sensor_distance = self.ultrasonic_sensor.measure_distance()
@@ -64,6 +67,7 @@ class AutonomousCar:
             self.ultrasonic_sensor.exit()
 
     def camera_preview(self):
+        print('getting camera preview...')
         try:
             self.camera.capture_frames()
         except KeyboardInterrupt:
@@ -72,6 +76,7 @@ class AutonomousCar:
     def exit(self):
         self.motors.exit()
         self.ultrasonic_sensor.exit()
+        gpio.cleanup()
 
 
 def main():
@@ -79,7 +84,7 @@ def main():
     try:
         car.drive()
     except KeyboardInterrupt:
-        gpio.cleanup()
+        car.exit()
 
 
 if __name__ == '__main__':
