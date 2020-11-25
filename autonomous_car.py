@@ -3,6 +3,7 @@ from components.joystick import Joystick
 from components.camera import Camera
 from components.ultrasonic_sensor import UltrasonicSensor
 from _thread import start_new_thread
+import RPi.GPIO as gpio
 
 EXIT_MOTORS_BTN = 'x'
 STOP_JOYSTICK_BTN = 'a'
@@ -17,7 +18,8 @@ class AutonomousCar:
         self.ultrasonic_sensor = ultrasonic_sensor
 
         self.turn_sensitivity = turn_sensitivity
-        self.joystick_values = {}
+        self.joystick_values = {'a': 0, 'b': 0, 'x': 0, 'y': 0, 'L1': 0, 'R1': 0, 'L2': 0, 'R2': 0,
+                                'share': 0, 'options': 0, 'axis1': 0., 'axis2': 0., 'axis3': 0., 'axis4': 0.}
         self.sensor_distance = 0
 
     def drive(self):
@@ -74,7 +76,10 @@ class AutonomousCar:
 
 def main():
     car = AutonomousCar(Motors(25, 24, 23, 22, 27, 17), Joystick(), Camera(), UltrasonicSensor(15, 14))
-    car.drive()
+    try:
+        car.drive()
+    except KeyboardInterrupt:
+        gpio.cleanup()
 
 
 if __name__ == '__main__':
