@@ -24,54 +24,41 @@ class AutonomousCar:
 
     def drive(self):
         start_new_thread(self.get_joystick_buttons, ())
-        start_new_thread(self.camera.capture_frames, ())
+        start_new_thread(self.camera_preview, ())
         start_new_thread(self.measure_distance, ())
         start_new_thread(self.drive_motors, ())
 
     def drive_motors(self):
-        print('driving...')
+        print('starting motors...')
         self.motors.start()
         drive = True
-        try:
-            while True:
-                if self.joystick_values[EXIT_MOTORS_BTN]:
-                    self.motors.exit()
-                    break
-                if self.joystick_values[STOP_JOYSTICK_BTN]:
-                    drive = False
-                if self.joystick_values[RESUME_MOTORS_BTN]:
-                    drive = True
-                if drive:
-                    self.motors.move(self.joystick_values['axis1'],
-                                     (self.joystick_values['axis2'] * self.turn_sensitivity), 0.1)
-        except KeyboardInterrupt:
-            print('Motors stopped')
-            self.motors.exit()
+
+        while True:
+            if self.joystick_values[EXIT_MOTORS_BTN]:
+                self.motors.exit()
+                break
+            if self.joystick_values[STOP_JOYSTICK_BTN]:
+                drive = False
+            if self.joystick_values[RESUME_MOTORS_BTN]:
+                drive = True
+            if drive:
+                self.motors.move(self.joystick_values['axis1'],
+                                 (self.joystick_values['axis2'] * self.turn_sensitivity), 0.1)
 
     def get_joystick_buttons(self):
         print('getting joystick buttons...')
-        try:
-            while True:
-                self.joystick_values = self.joystick.get_buttons()
-        except KeyboardInterrupt:
-            print('Joystick stopped')
+        while True:
+            self.joystick_values = self.joystick.get_buttons()
 
     def measure_distance(self):
         print('measuring distance...')
-        try:
-            while True:
-                self.sensor_distance = self.ultrasonic_sensor.measure_distance()
-                print('Measured distance = %.1f cm', self.sensor_distance)
-        except KeyboardInterrupt:
-            print('Ultrasonic sensor stopped')
-            self.ultrasonic_sensor.exit()
+        while True:
+            self.sensor_distance = self.ultrasonic_sensor.measure_distance()
+            print('Measured distance = %.1f cm', self.sensor_distance)
 
     def camera_preview(self):
         print('getting camera preview...')
-        try:
-            self.camera.capture_frames()
-        except KeyboardInterrupt:
-            print('Camera preview stopped')
+        self.camera.capture_frames()
 
     def exit(self):
         self.motors.exit()
