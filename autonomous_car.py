@@ -63,6 +63,7 @@ class AutonomousCar:
     def exit(self):
         self.motors.exit()
         self.ultrasonic_sensor.exit()
+        self.camera.exit()
         gpio.cleanup()
 
 
