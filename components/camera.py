@@ -5,7 +5,7 @@ class Camera:
     def __init__(self, cap_num=0):
         self._cap_num = cap_num
 
-    def capture_frames(self, show_preview=True, save_frames=False, path='./', flipped=True, max_frames=-1):
+    def capture_frames(self, show_preview=True, save_frames=False, path='./', flipped=True, max_frames=-1, joystick_value=0):
         cap = cv2.VideoCapture(self._cap_num)
 
         frame_num = 0
@@ -25,6 +25,11 @@ class Camera:
 
                 if save_frames:
                     cv2.imwrite(f'{path}{frame_num}.jpg', frame)
+                    with open('data.txt', 'w+') as file:
+                        turn_value = 'No Data'
+                        if joystick_value:
+                            turn_value = joystick_value
+                        file.write(f'{path}{frame_num}.jpg,{turn_value}')
 
                 key = cv2.waitKey(1)
                 if key == ord('q'):

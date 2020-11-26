@@ -60,6 +60,17 @@ class AutonomousCar:
         print('getting camera preview...')
         self.camera.capture_frames()
 
+    def get_camera_frames(self, show_preview=False, save_frames=True, path='./images/', flipped=True, max_frames=-1):
+        print('getting camera frames...')
+        self.camera.capture_frames(show_preview, save_frames, path, flipped, max_frames,
+                                   joystick_value=self.joystick_values['axis2'])
+
+    def collect_dataset(self):
+        start_new_thread(self.get_joystick_buttons, ())
+        start_new_thread(self.camera.capture_frames, ())
+        start_new_thread(self.measure_distance, ())
+        start_new_thread(self.drive_motors, ())
+
     def exit(self):
         self.motors.exit()
         self.ultrasonic_sensor.exit()
