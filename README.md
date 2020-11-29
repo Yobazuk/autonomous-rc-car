@@ -1,7 +1,7 @@
 # Autonomous RC Car
 Autonomous rc car using neural networks
 
-![Image](https://www.tuningblog.eu/wp-content/uploads/2020/02/1969-Ford-Mustang-Hitman-Mach-1-Restomod-Tuning-Header.jpg)
+![Car](https://www.tuningblog.eu/wp-content/uploads/2020/02/1969-Ford-Mustang-Hitman-Mach-1-Restomod-Tuning-Header.jpg)
 
 ### Table Of Contents
 - [Description](#description)
@@ -17,3 +17,5 @@ This is an autonomous rc car using neural networks
 car = AutonomousCar()
 car.drive()
 ```
+
+![RC Car Diagram](rc-car-diagram.png)
