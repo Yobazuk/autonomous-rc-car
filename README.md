@@ -18,4 +18,4 @@ car = AutonomousCar()
 car.drive()
 ```
 
-![RC Car Diagram](rc-car-diagram.png)
+<img src="images/rc-car-diagram.png" align="center" width="500" alt="RC Car Diagram">
