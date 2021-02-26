@@ -4,10 +4,14 @@ from components.camera import Camera
 from components.ultrasonic_sensor import UltrasonicSensor
 from _thread import start_new_thread
 import RPi.GPIO as gpio
+import json
 
-EXIT_MOTORS_BTN = 'x'
-STOP_JOYSTICK_BTN = 'a'
-RESUME_MOTORS_BTN = 'b'
+with open('config.json') as f:
+    config = json.load(f)
+
+EXIT_MOTORS_BTN = config['EXIT_MOTORS_BTN']
+STOP_JOYSTICK_BTN = config['STOP_JOYSTICK_BTN']
+RESUME_MOTORS_BTN = config['RESUME_MOTORS_BTN']
 
 
 class AutonomousCar:
@@ -42,8 +46,8 @@ class AutonomousCar:
             if self.joystick_values[RESUME_MOTORS_BTN]:
                 drive = True
             if drive:
-                self.motors.move(self.joystick_values['axis1'],
-                                 (self.joystick_values['axis2'] * self.turn_sensitivity), 0.1)
+                self.motors.move(self.joystick_values[config['drive_axis']],
+                                 (self.joystick_values[config['turn_axis']] * self.turn_sensitivity), 0.1)
 
     def get_joystick_buttons(self):
         print('getting joystick buttons...')
@@ -63,7 +67,7 @@ class AutonomousCar:
     def get_camera_frames(self, show_preview=False, save_frames=True, path='./images/', flipped=True, max_frames=-1):
         print('getting camera frames...')
         self.camera.capture_frames(show_preview, save_frames, path, flipped, max_frames,
-                                   joystick_value=self.joystick_values['axis2'])
+                                   joystick_value=self.joystick_values[config['turn_axis']])
 
     def collect_dataset(self):
         start_new_thread(self.get_joystick_buttons, ())
@@ -79,7 +83,8 @@ class AutonomousCar:
 
 
 def main():
-    car = AutonomousCar(Motors(25, 24, 23, 22, 27, 17), Joystick(), Camera(), UltrasonicSensor(15, 14))
+    car = AutonomousCar(Motors(*config['left_motor'].values(), *config['right_motor'].values()), Joystick(),
+                        Camera(), UltrasonicSensor(*config['ultrasonic_sensor'].values()))
     try:
         car.drive()
         while True:
