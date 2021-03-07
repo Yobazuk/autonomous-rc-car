@@ -1,8 +1,8 @@
 
 {
   "turn_sensitivity": 0.7,
-  "turn_axis": "axis1",
-  "drive_axis": "axis2",
+  "turn_axis": "axis2",
+  "drive_axis": "axis1",
   "left_motor": {"motor_pin":  25, "forward_pin": 23, "backwards_pin":  24},
   "right_motor": {"motor_pin":  22, "forward_pin": 27, "backwards_pin":  17},
   "ultrasonic_sensor": {"trigger_pin":  15, "echo_pin":  14},
