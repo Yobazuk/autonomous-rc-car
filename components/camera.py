@@ -1,9 +1,37 @@
 import cv2
+import pandas as pd
+import os
+import threading
 
 
 class Camera:
     def __init__(self, cap_num=0):
         self._cap_num = cap_num
+        self.cap = cv2.VideoCapture(self._cap_num)
+        self.saved_frames = []
+        self.saved_steering_info = []
+
+    def save_frame(self, filename, joystick_value):
+        if self.cap.isOpened():
+            ret, frame = self.cap.read()
+
+            if ret:
+                frame = cv2.flip(frame, 1)
+                cv2.imwrite(filename, frame)
+
+                self.saved_frames.append(filename)
+                self.saved_steering_info.append(joystick_value)
+
+    def save_log(self, path):
+        data = {'Image': self.saved_frames, 'Steering': self.saved_steering_info}
+
+        df = pd.DataFrame(data)
+        df.to_csv(path, index=False, header=False)
+
+        self.saved_frames = []
+        self.saved_steering_info = []
+
+        print(f'Log {path} saved')
 
     def capture_frames(self, show_preview=True, save_frames=False, path='./', flipped=True, max_frames=-1, joystick_value=0):
         cap = cv2.VideoCapture(self._cap_num)
@@ -24,7 +52,7 @@ class Camera:
                     cv2.imshow('frame', frame)
 
                 if save_frames:
-                    cv2.imwrite(f'{path}{frame_num}.jpg', frame)
+                    cv2.imwrite(f'{frame_num}.jpg', frame)
                     with open('data.txt', 'w+') as file:
                         turn_value = 'No Data'
                         if joystick_value:
@@ -80,3 +108,45 @@ class Camera:
     @staticmethod
     def exit():
         cv2.destroyAllWindows()
+
+
+def create_new_set(cam, path, event):
+    os.mkdir(path)
+    i = 0
+
+    while not event.isSet():
+        cam.save_frame(os.path.join(path, str(i) + '.jpg'), i / 10)
+        i += 1
+        # print(f'saved frame {i}')
+
+    print('saved all frames')
+    cam.save_log(os.path.join(path, f'data.csv'))
+
+
+def main():
+    cam = Camera()
+    dataset_path = os.path.join(os.getcwd(), 'dataset\\')
+    folder_count = 0
+    ans = ''
+    e = threading.Event()
+
+    input('ready?')
+
+    while ans != 'q':
+        e.clear()
+
+        while os.path.exists(os.path.join(dataset_path, f'SET{str(folder_count)}')):
+            folder_count += 1
+        path = os.path.join(dataset_path, f'SET{str(folder_count)}')
+
+        t = threading.Thread(target=create_new_set, args=(cam, path, e), daemon=True)
+        t.start()
+
+        ans = input('Stop? ')
+        if ans == 'y' or ans == 'q':
+            e.set()
+            input('cont? ')
+
+
+if __name__ == '__main__':
+    main()
