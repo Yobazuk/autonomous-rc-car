@@ -105,48 +105,18 @@ class Camera:
         out.release()
         cv2.destroyAllWindows()
 
+    def create_new_set(self, path, event):
+        os.mkdir(path)
+        i = 0
+
+        while not event.isSet():
+            self.save_frame(os.path.join(path, str(i) + '.jpg'), i / 10)
+            i += 1
+            # print(f'saved frame {i}')
+
+        print('saved all frames')
+        self.save_log(os.path.join(path, f'data.csv'))
+
     @staticmethod
     def exit():
         cv2.destroyAllWindows()
-
-
-def create_new_set(cam, path, event):
-    os.mkdir(path)
-    i = 0
-
-    while not event.isSet():
-        cam.save_frame(os.path.join(path, str(i) + '.jpg'), i / 10)
-        i += 1
-        # print(f'saved frame {i}')
-
-    print('saved all frames')
-    cam.save_log(os.path.join(path, f'data.csv'))
-
-
-def main():
-    cam = Camera()
-    dataset_path = os.path.join(os.getcwd(), 'dataset\\')
-    folder_count = 0
-    ans = ''
-    e = threading.Event()
-
-    input('ready?')
-
-    while ans != 'q':
-        e.clear()
-
-        while os.path.exists(os.path.join(dataset_path, f'SET{str(folder_count)}')):
-            folder_count += 1
-        path = os.path.join(dataset_path, f'SET{str(folder_count)}')
-
-        t = threading.Thread(target=create_new_set, args=(cam, path, e), daemon=True)
-        t.start()
-
-        ans = input('Stop? ')
-        if ans == 'y' or ans == 'q':
-            e.set()
-            input('cont? ')
-
-
-if __name__ == '__main__':
-    main()

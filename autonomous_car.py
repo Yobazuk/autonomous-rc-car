@@ -2,24 +2,33 @@ from components.motors import Motors
 from components.joystick import Joystick
 from components.camera import Camera
 from components.ultrasonic_sensor import UltrasonicSensor
-from _thread import start_new_thread
 import RPi.GPIO as gpio
 import json
+import os
+import threading
 
 with open('config.json') as f:
     config = json.load(f)
 
-EXIT_MOTORS_BTN = config['EXIT_MOTORS_BTN']
-STOP_JOYSTICK_BTN = config['STOP_JOYSTICK_BTN']
-RESUME_MOTORS_BTN = config['RESUME_MOTORS_BTN']
+EXIT_BTN = config['EXIT_BTN']
+PAUSE_MOTORS_BTN = config['PAUSE_MOTORS_BTN']
+PAUSE_DATASET_BTN = config['PAUSE_DATASET_BTN']
 
 
 class AutonomousCar:
-    def __init__(self, motors, joystick, camera, ultrasonic_sensor, turn_sensitivity=0.7):
+    def __init__(self, motors, joystick, camera, ultrasonic_sensor, dataset_path='', turn_sensitivity=0.7):
         self.motors = motors
         self.joystick = joystick
         self.camera = camera
         self.ultrasonic_sensor = ultrasonic_sensor
+
+        self.exit_event = threading.Event()
+        self.pause_motors_event = threading.Event()
+        self.pause_dataset_event = threading.Event()
+
+        self.dataset_path = dataset_path
+        if not dataset_path:
+            self.dataset_path = os.path.join(os.getcwd(), 'dataset\\')
 
         self.turn_sensitivity = turn_sensitivity
         self.joystick_values = {'a': 0, 'b': 0, 'x': 0, 'y': 0, 'L1': 0, 'R1': 0, 'L2': 0, 'R2': 0,
@@ -27,25 +36,31 @@ class AutonomousCar:
         self.sensor_distance = 0
 
     def drive(self):
-        start_new_thread(self.get_joystick_buttons, ())
-        start_new_thread(self.camera_preview, ())
-        start_new_thread(self.measure_distance, ())
-        start_new_thread(self.drive_motors, ())
+        joystick_t = threading.Thread(target=self.get_joystick_buttons, args=(), daemon=True)
+        camera_t = threading.Thread(target=self.camera_preview, args=(), daemon=True)
+        distance_t = threading.Thread(target=self.measure_distance, args=(), daemon=True)
+        motors_t = threading.Thread(target=self.drive_motors, args=(), daemon=True)
+
+        joystick_t.start()
+        camera_t.start()
+        distance_t.start()
+        motors_t.start()
+
+        while not self.exit_event.isSet():
+            pass
+
+        # Kill all threads
+        self.exit()
 
     def drive_motors(self):
         print('starting motors...')
         self.motors.start()
-        drive = True
 
         while True:
-            if self.joystick_values[EXIT_MOTORS_BTN]:
+            '''if self.joystick_values[EXIT_MOTORS_BTN]:
                 self.motors.exit()
-                break
-            if self.joystick_values[STOP_JOYSTICK_BTN]:
-                drive = False
-            if self.joystick_values[RESUME_MOTORS_BTN]:
-                drive = True
-            if drive:
+                break'''
+            if not self.pause_motors_event.isSet():
                 self.motors.move(self.joystick_values[config['drive_axis']],
                                  (self.joystick_values[config['turn_axis']] * self.turn_sensitivity), 0.1)
 
@@ -53,6 +68,23 @@ class AutonomousCar:
         print('getting joystick buttons...')
         while True:
             self.joystick_values = self.joystick.get_buttons()
+
+            # Handle buttons events
+            if self.joystick_values[EXIT_BTN]:
+                if self.exit_event.isSet():
+                    self.exit_event.clear()
+                else:
+                    self.exit_event.set()
+            if self.joystick_values[PAUSE_MOTORS_BTN]:
+                if self.pause_motors_event.isSet():
+                    self.pause_motors_event.clear()
+                else:
+                    self.pause_motors_event.set()
+            if self.joystick_values[PAUSE_DATASET_BTN]:
+                if self.pause_dataset_event.isSet():
+                    self.pause_dataset_event.clear()
+                else:
+                    self.pause_dataset_event.set()
 
     def measure_distance(self):
         print('measuring distance...')
@@ -70,10 +102,30 @@ class AutonomousCar:
                                    joystick_value=self.joystick_values[config['turn_axis']])
 
     def collect_dataset(self):
-        start_new_thread(self.get_joystick_buttons, ())
-        start_new_thread(self.camera.capture_frames, ())
-        start_new_thread(self.measure_distance, ())
-        start_new_thread(self.drive_motors, ())
+
+        joystick_t = threading.Thread(target=self.get_joystick_buttons, args=())
+        motors_t = threading.Thread(target=self.drive_motors, args=())
+
+        joystick_t.start()
+        motors_t.start()
+
+        folder_count = 0
+
+        while not self.exit_event.isSet():
+
+            while os.path.exists(os.path.join(self.dataset_path, f'SET{str(folder_count)}')):
+                folder_count += 1
+            path = os.path.join(self.dataset_path, f'SET{str(folder_count)}')
+
+            while self.pause_dataset_event.isSet():
+                pass
+
+            t = threading.Thread(target=self.camera.create_new_set, args=(path, self.pause_dataset_event), daemon=True)
+            t.start()
+
+            self.pause_dataset_event.wait()
+
+        self.exit()
 
     def exit(self):
         self.motors.exit()
