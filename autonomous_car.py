@@ -6,6 +6,7 @@ import RPi.GPIO as gpio
 import json
 import os
 import threading
+from time import sleep
 
 with open('config.json') as f:
     config = json.load(f)
@@ -25,6 +26,8 @@ class AutonomousCar:
         self.exit_event = threading.Event()
         self.pause_motors_event = threading.Event()
         self.pause_dataset_event = threading.Event()
+
+        self.pause_dataset_event.set()
 
         self.dataset_path = dataset_path
         if not dataset_path:
@@ -86,6 +89,8 @@ class AutonomousCar:
                 else:
                     self.pause_dataset_event.set()
 
+            sleep(0.2)
+
     def measure_distance(self):
         print('measuring distance...')
         while True:
@@ -117,10 +122,11 @@ class AutonomousCar:
                 folder_count += 1
             path = os.path.join(self.dataset_path, f'SET{str(folder_count)}')
 
+            t = threading.Thread(target=self.camera.create_new_set, args=(path, self.pause_dataset_event), daemon=True)
+
             while self.pause_dataset_event.isSet():
                 pass
 
-            t = threading.Thread(target=self.camera.create_new_set, args=(path, self.pause_dataset_event), daemon=True)
             t.start()
 
             self.pause_dataset_event.wait()
