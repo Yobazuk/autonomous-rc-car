@@ -28,7 +28,7 @@ class AutonomousCar:
 
         self.dataset_path = dataset_path
         if not dataset_path:
-            self.dataset_path = os.path.join(os.getcwd(), 'dataset\\')
+            self.dataset_path = os.path.join(os.getcwd(), 'dataset/')
 
         self.turn_sensitivity = turn_sensitivity
         self.joystick_values = {'a': 0, 'b': 0, 'x': 0, 'y': 0, 'L1': 0, 'R1': 0, 'L2': 0, 'R2': 0,
@@ -61,8 +61,8 @@ class AutonomousCar:
                 self.motors.exit()
                 break'''
             if not self.pause_motors_event.isSet():
-                self.motors.move(self.joystick_values[config['drive_axis']],
-                                 (self.joystick_values[config['turn_axis']] * self.turn_sensitivity), 0.1)
+                self.motors.move(-self.joystick_values[config['drive_axis']],
+                                 -(self.joystick_values[config['turn_axis']] * self.turn_sensitivity), 0.1)
 
     def get_joystick_buttons(self):
         print('getting joystick buttons...')
