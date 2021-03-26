@@ -72,7 +72,7 @@ class AutonomousCar:
 
             t = threading.Thread(target=self.camera.create_new_set, args=(path, self.pause_dataset_event))
 
-            while not self.pause_dataset_event.isSet():
+            while self.pause_dataset_event.isSet():
                 pass
 
             t.start()
@@ -113,10 +113,12 @@ class AutonomousCar:
             if self.joystick_values[PAUSE_DATASET_BTN]:
                 if self.pause_dataset_event.isSet():
                     self.pause_dataset_event.clear()
+                    print('CLEARED')
                 else:
                     self.pause_dataset_event.set()
+                    print('PAUSED')
 
-            sleep(0.05)
+            sleep(0.1)
 
     def measure_distance(self):
         print('measuring distance...')
@@ -144,7 +146,7 @@ def main():
     car = AutonomousCar(Motors(*config['left_motor'].values(), *config['right_motor'].values()), Joystick(),
                         Camera(), UltrasonicSensor(*config['ultrasonic_sensor'].values()))
     try:
-        car.drive()
+        car.collect_dataset()
         while True:
             pass
     except KeyboardInterrupt:
