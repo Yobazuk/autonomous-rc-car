@@ -49,10 +49,37 @@ class AutonomousCar:
         distance_t.start()
         motors_t.start()
 
-        while not self.exit_event.isSet():
-            pass
+        self.exit_event.wait()
 
         # Kill all threads
+        self.exit()
+
+    def collect_dataset(self):
+
+        joystick_t = threading.Thread(target=self.get_joystick_buttons, args=())
+        motors_t = threading.Thread(target=self.drive_motors, args=())
+
+        joystick_t.start()
+        motors_t.start()
+
+        folder_count = 0
+
+        while not self.exit_event.isSet():
+
+            while os.path.exists(os.path.join(self.dataset_path, f'SET{str(folder_count)}')):
+                folder_count += 1
+            path = os.path.join(self.dataset_path, f'SET{str(folder_count)}')
+
+            t = threading.Thread(target=self.camera.create_new_set, args=(path, self.pause_dataset_event))
+
+            while not self.pause_dataset_event.isSet():
+                pass
+
+            t.start()
+            t.join()
+
+            self.pause_dataset_event.wait()
+
         self.exit()
 
     def drive_motors(self):
@@ -89,7 +116,7 @@ class AutonomousCar:
                 else:
                     self.pause_dataset_event.set()
 
-            sleep(0.2)
+            sleep(0.05)
 
     def measure_distance(self):
         print('measuring distance...')
@@ -105,33 +132,6 @@ class AutonomousCar:
         print('getting camera frames...')
         self.camera.capture_frames(show_preview, save_frames, path, flipped, max_frames,
                                    joystick_value=self.joystick_values[config['turn_axis']])
-
-    def collect_dataset(self):
-
-        joystick_t = threading.Thread(target=self.get_joystick_buttons, args=())
-        motors_t = threading.Thread(target=self.drive_motors, args=())
-
-        joystick_t.start()
-        motors_t.start()
-
-        folder_count = 0
-
-        while not self.exit_event.isSet():
-
-            while os.path.exists(os.path.join(self.dataset_path, f'SET{str(folder_count)}')):
-                folder_count += 1
-            path = os.path.join(self.dataset_path, f'SET{str(folder_count)}')
-
-            t = threading.Thread(target=self.camera.create_new_set, args=(path, self.pause_dataset_event), daemon=True)
-
-            while self.pause_dataset_event.isSet():
-                pass
-
-            t.start()
-
-            self.pause_dataset_event.wait()
-
-        self.exit()
 
     def exit(self):
         self.motors.exit()

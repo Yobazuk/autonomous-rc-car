@@ -112,7 +112,6 @@ class Camera:
         while not event.isSet():
             self.save_frame(os.path.join(path, str(i) + '.jpg'), i / 10)
             i += 1
-            # print(f'saved frame {i}')
 
         print('saved all frames')
         self.save_log(os.path.join(path, f'data.csv'))
