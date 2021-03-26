@@ -70,7 +70,7 @@ class AutonomousCar:
                 folder_count += 1
             path = os.path.join(self.dataset_path, f'SET{str(folder_count)}')
 
-            t = threading.Thread(target=self.camera.create_new_set, args=(path, self.pause_dataset_event))
+            t = threading.Thread(target=self.camera.create_new_set, args=(path, self.pause_dataset_event, self.joystick_values))
 
             while self.pause_dataset_event.isSet():
                 pass

@@ -2,6 +2,10 @@ import cv2
 import pandas as pd
 import os
 import threading
+import json
+
+with open('config.json') as f:
+    config = json.load(f)
 
 
 class Camera:
@@ -105,12 +109,12 @@ class Camera:
         out.release()
         cv2.destroyAllWindows()
 
-    def create_new_set(self, path, event):
+    def create_new_set(self, path, event, joystick_values):
         os.mkdir(path)
         i = 0
 
         while not event.isSet():
-            self.save_frame(os.path.join(path, str(i) + '.jpg'), i / 10)
+            self.save_frame(os.path.join(path, str(i) + '.jpg'), -joystick_values[config['turn_axis']])
             i += 1
 
         print('saved all frames')
