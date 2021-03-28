@@ -114,7 +114,7 @@ class Camera:
         i = 0
 
         while not event.isSet():
-            self.save_frame(os.path.join(path, str(i) + '.jpg'), -joystick_values[config['turn_axis']])
+            self.save_frame(os.path.join(path, str(i) + '.jpg'), -joystick_values[config['drive_axis']])
             i += 1
 
         print('saved all frames')
