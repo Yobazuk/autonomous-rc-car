@@ -3,10 +3,15 @@ from components.motors import Motors
 from components.joystick import Joystick
 from components.camera import Camera
 from components.ultrasonic_sensor import UltrasonicSensor
+import json
+
+with open('config.json') as f:
+    config = json.load(f)
 
 
 def main():
-    car = AutonomousCar(Motors(25, 24, 23, 22, 27, 17), Joystick(), Camera(), UltrasonicSensor(15, 14))
+    car = AutonomousCar(Motors(*config['left_motor'].values(), *config['right_motor'].values()), Joystick(),
+                        Camera(), UltrasonicSensor(*config['ultrasonic_sensor'].values()))
     try:
         car.collect_dataset()
         while True:

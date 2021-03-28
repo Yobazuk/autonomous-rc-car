@@ -146,7 +146,7 @@ def main():
     car = AutonomousCar(Motors(*config['left_motor'].values(), *config['right_motor'].values()), Joystick(),
                         Camera(), UltrasonicSensor(*config['ultrasonic_sensor'].values()))
     try:
-        car.collect_dataset()
+        car.drive()
         while True:
             pass
     except KeyboardInterrupt:
