@@ -9,23 +9,13 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Convolution2D, Flatten, Dense
 from tensorflow.keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
+from utils import *
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if len(physical_devices) > 0:
     tf.config.experimental.set_memory_growth(physical_devices[0], True)
-
-
-def read_image(path, label):
-    image = tf.io.read_file(path)
-    image = tf.image.decode_image(image, channels=3, dtype=tf.float32)
-    return image, label
-
-
-def augment(image, label):
-    # do augmentation
-    return image, label
 
 
 def main():
@@ -54,10 +44,10 @@ def main():
     # input('cont?')
 
     ds_train = tf.data.Dataset.from_tensor_slices((images_train, steering_train))
-    ds_train = ds_train.map(read_image).map(augment).batch(2)
+    ds_train = ds_train.map(read_image).map(augment_image).batch(2)
 
     ds_validate = tf.data.Dataset.from_tensor_slices((images_val, steering_val))
-    ds_validate = ds_validate.map(read_image).map(augment).batch(2)
+    ds_validate = ds_validate.map(read_image).map(augment_image).batch(2)
 
     # input_shape=(66, 200, 3)
 
