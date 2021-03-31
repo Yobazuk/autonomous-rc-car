@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 import numpy as np
-#import matplotlib.pyplot as plt
-#import cv2
+import matplotlib.pyplot as plt
+import cv2
 
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
@@ -35,19 +35,16 @@ def main():
     for i in range(len(image_paths)):
         image_paths[i] = os.path.join(dataset_path, image_paths[i].split('/')[-2], image_paths[i].split('/')[-1])
 
-    # input(image_paths)
-
     images_train, images_val, steering_train, steering_val = train_test_split(image_paths, steering,
                                                                               test_size=0.2, random_state=10)
 
-    # print(images_train, steering_train, '\n\n\n\n', images_val, steering_val)
-    # input('cont?')
-
     ds_train = tf.data.Dataset.from_tensor_slices((images_train, steering_train))
-    ds_train = ds_train.map(read_image).map(augment_image).batch(2)
+    ds_train = ds_train.map(read_image).batch(2)
+    # ds_train = ds_train.map(read_image).map(augment_image).map(preprocess).batch(2)
 
     ds_validate = tf.data.Dataset.from_tensor_slices((images_val, steering_val))
-    ds_validate = ds_validate.map(read_image).map(augment_image).batch(2)
+    ds_validate = ds_validate.map(read_image).batch(2)
+    # ds_validate = ds_validate.map(read_image).map(preprocess).batch(2)
 
     # input_shape=(66, 200, 3)
 
@@ -67,9 +64,11 @@ def main():
                         Dense(1)]
                        )
 
-    model.compile(Adam(lr=0.0001), loss='mse')
+    model.compile(Adam(lr=0.0001), loss='mse', metrics=["accuracy"])
 
     model.fit(ds_train, epochs=10, validation_data=ds_validate, verbose=1)
+
+    # model.save('steering_model.h5')
 
 
 if __name__ == '__main__':
