@@ -91,8 +91,8 @@ class AutonomousCar:
                 self.motors.exit()
                 break'''
             if not self.pause_motors_event.isSet():
-                self.motors.move(-self.joystick_values[config['drive_axis']],
-                                 -(self.joystick_values[config['turn_axis']] * self.turn_sensitivity), 0.1)
+                self.motors.move(self.joystick_values[config['drive_axis']],
+                                 (self.joystick_values[config['turn_axis']] * self.turn_sensitivity), 0.1)
 
     def get_joystick_buttons(self):
         print('getting joystick buttons...')

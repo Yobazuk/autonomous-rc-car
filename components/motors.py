@@ -74,8 +74,8 @@ class Motors:
     def move(self, speed=0, turn=0, t=0):
         speed *= 100
         turn *= 100
-        left_speed = self.normalize((speed - turn), minimum=-100, maximum=100)
-        right_speed = self.normalize((speed + turn), minimum=-100, maximum=100)
+        left_speed = -self.normalize((speed - turn), minimum=-100, maximum=100)
+        right_speed = -self.normalize((speed + turn), minimum=-100, maximum=100)
 
         self._motor1.change_duty_cycle(abs(left_speed))
         self._motor2.change_duty_cycle(abs(right_speed))
