@@ -7,6 +7,7 @@ import json
 import os
 import threading
 from time import sleep
+from tensorflow.keras.models import load_model
 
 with open('config.json') as f:
     config = json.load(f)
@@ -17,7 +18,8 @@ PAUSE_DATASET_BTN = config['PAUSE_DATASET_BTN']
 
 
 class AutonomousCar:
-    def __init__(self, motors, joystick, camera, ultrasonic_sensor, dataset_path='', turn_sensitivity=0.7):
+    def __init__(self, motors, joystick, camera, ultrasonic_sensor, dataset_path='',
+                 turn_sensitivity=0.7, steering_model=''):
         self.motors = motors
         self.joystick = joystick
         self.camera = camera
@@ -32,6 +34,10 @@ class AutonomousCar:
         self.dataset_path = dataset_path
         if not dataset_path:
             self.dataset_path = os.path.join(os.getcwd(), 'dataset/')
+
+        self.steering_model = steering_model
+        if steering_model:
+            self.steering_model = load_model(steering_model)
 
         self.turn_sensitivity = turn_sensitivity
         self.joystick_values = {'a': 0, 'b': 0, 'x': 0, 'y': 0, 'L1': 0, 'R1': 0, 'L2': 0, 'R2': 0,
@@ -91,8 +97,11 @@ class AutonomousCar:
                 self.motors.exit()
                 break'''
             if not self.pause_motors_event.isSet():
+                turn = self.joystick_values[config['turn_axis']]
+                if self.steering_model:
+                    turn = float(self.steering_model.predict(self.camera.get_frame()))
                 self.motors.move(self.joystick_values[config['drive_axis']],
-                                 (self.joystick_values[config['turn_axis']] * self.turn_sensitivity), 0.1)
+                                 (turn * self.turn_sensitivity), 0.1)
 
     def get_joystick_buttons(self):
         print('getting joystick buttons...')

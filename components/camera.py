@@ -37,6 +37,14 @@ class Camera:
 
         print(f'Log {path} saved')
 
+    def get_frame(self):
+        ret, frame = self.cap.read()
+        try:
+            frame = cv2.flip(frame, 1)
+            return frame
+        except:
+            raise Exception('Frame capture failed')
+
     def capture_frames(self, show_preview=True, save_frames=False, path='./', flipped=True, max_frames=-1, joystick_value=0):
         cap = cv2.VideoCapture(self._cap_num)
 

@@ -20,7 +20,7 @@ if len(physical_devices) > 0:
 
 def main():
 
-    dataset_path = r'C:\Users\yobaz\Desktop\Dataset'
+    dataset_path = r'C:\Users\yobaz\Desktop\ds'
 
     df = []
 
@@ -68,7 +68,7 @@ def main():
 
     model.fit(ds_train, epochs=10, validation_data=ds_validate, verbose=1)
 
-    # model.save('steering_model.h5')
+    model.save('steering_model.h5')
 
 
 if __name__ == '__main__':
