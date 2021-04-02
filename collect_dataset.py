@@ -54,6 +54,7 @@ def main():
     joystick = Joystick()
     cam = cv2.VideoCapture(0)
     motors = Motors(*config['left_motor'].values(), *config['right_motor'].values())
+    motors.start()
 
     path = ''
     frame_count = 0
