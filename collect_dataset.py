@@ -34,7 +34,7 @@ def save_log(path):
     data = {'image_path': saved_frames, 'steering': saved_steering_info}
 
     df = pd.DataFrame(data)
-    df.to_csv(path, index=False, header=True)
+    df.to_csv(os.path.join(path, 'data.csv'), index=False, header=True)
 
     saved_frames = []
     saved_steering_info = []
