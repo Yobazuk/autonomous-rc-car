@@ -131,3 +131,4 @@ class Camera:
     @staticmethod
     def exit():
         cv2.destroyAllWindows()
+

@@ -153,7 +153,7 @@ class AutonomousCar:
 
 def main():
     car = AutonomousCar(Motors(*config['left_motor'].values(), *config['right_motor'].values()), Joystick(),
-                        Camera(), UltrasonicSensor(*config['ultrasonic_sensor'].values()))
+                        Camera(), UltrasonicSensor(*config['ultrasonic_sensor'].values()), steering_model='steering_model.h5')
     try:
         car.drive()
         while True:
