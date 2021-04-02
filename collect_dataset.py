@@ -39,8 +39,6 @@ def save_log(path):
     saved_frames = []
     saved_steering_info = []
 
-    print(f'Log {path} saved')
-
 
 def update_path():
     global folder_count, DATASET_PATH
@@ -73,18 +71,21 @@ def main():
             path = update_path()
             os.mkdir(path)
             collecting_data = True
+            print(f'Created new set {path}')
 
         if not collect_data and collecting_data:
             save_log(path)
+            frame_count = 0
             collecting_data = False
+            print(f'Log {path} saved')
 
         if collecting_data:
             _, frame = cam.read()
-            save_frame(frame, os.path.join(path, str(frame_count), '.jpg'), joystick_values[config['turn_axis']])
+            save_frame(frame, os.path.join(path, (str(frame_count) + '.jpg')), joystick_values[config['turn_axis']])
             frame_count += 1
 
-        motors.move(joystick_values[config['drive_axis']],
-                    (joystick_values[config['turn_axis']] * turn_sensitivity), 0.1)
+        motors.move(joystick_values[config['turn_axis']],
+                    (joystick_values[config['drive_axis']] * turn_sensitivity), 0.1)
 
 
 if __name__ == '__main__':
