@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import cv2
 
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
@@ -20,7 +19,7 @@ if len(physical_devices) > 0:
 
 def main():
 
-    dataset_path = r'C:\Users\yobaz\Desktop\ds'
+    dataset_path = r'C:\Users\yobaz\Desktop\dataset'
 
     df = []
 
@@ -28,6 +27,8 @@ def main():
         df.append(pd.read_csv(os.path.join(dataset_path, directory, 'data.csv')))
 
     df = pd.concat(df)
+
+    # visualize_data(df)
 
     image_paths = df['image_path'].values
     steering = df['steering'].values
@@ -38,19 +39,18 @@ def main():
     images_train, images_val, steering_train, steering_val = train_test_split(image_paths, steering,
                                                                               test_size=0.2, random_state=10)
 
+    images_train, steering_train = balance_data(images_train, steering_train)
+    # visualize_data({'steering': steering_train})
+
     ds_train = tf.data.Dataset.from_tensor_slices((images_train, steering_train))
-    ds_train = ds_train.map(read_image).batch(2)
-    # ds_train = ds_train.map(read_image).map(augment_image).map(preprocess).batch(2)
+    ds_train = ds_train.map(read_image).map(augment_image).map(preprocess).batch(2)
 
     ds_validate = tf.data.Dataset.from_tensor_slices((images_val, steering_val))
-    ds_validate = ds_validate.map(read_image).batch(2)
-    # ds_validate = ds_validate.map(read_image).map(preprocess).batch(2)
-
-    # input_shape=(66, 200, 3)
+    ds_validate = ds_validate.map(read_image).map(augment_image).map(preprocess).batch(2)
 
     model = Sequential([
                         # Convolutional feature maps
-                        Convolution2D(24, (5, 5), (2, 2), input_shape=(480, 640, 3), activation='elu'),
+                        Convolution2D(24, (5, 5), (2, 2), input_shape=(200, 66, 3), activation='elu'),
                         Convolution2D(36, (5, 5), (2, 2), activation='elu'),
                         Convolution2D(48, (5, 5), (2, 2), activation='elu'),
                         Convolution2D(64, (3, 3), activation='elu'),
@@ -68,9 +68,9 @@ def main():
 
     model.fit(ds_train, epochs=10, validation_data=ds_validate, verbose=1)
 
-    model.save('steering_model.h5')
+    if input('Save the model? (y/n): ').lower() == 'y':
+        model.save('steering_model.h5')
 
 
 if __name__ == '__main__':
     main()
-
