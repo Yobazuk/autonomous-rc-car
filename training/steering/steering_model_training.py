@@ -28,7 +28,7 @@ def main():
 
     df = pd.concat(df)
 
-    # visualize_data(df)
+    visualize_data(df)
 
     image_paths = df['image_path'].values
     steering = df['steering'].values
@@ -40,7 +40,7 @@ def main():
                                                                               test_size=0.2, random_state=10)
 
     images_train, steering_train = balance_data(images_train, steering_train)
-    # visualize_data({'steering': steering_train})
+    visualize_data({'steering': steering_train})
 
     ds_train = tf.data.Dataset.from_tensor_slices((images_train, steering_train))
     ds_train = ds_train.map(read_image).map(augment_image).map(preprocess).batch(2)
@@ -70,6 +70,7 @@ def main():
 
     if input('Save the model? (y/n): ').lower() == 'y':
         model.save('steering_model.h5')
+        print('model saved')
 
 
 if __name__ == '__main__':
