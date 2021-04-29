@@ -64,7 +64,7 @@ def visualize_data(data):
     plt.show()
 
 
-def balance_data(images, labels, num_to_remove=5500):
+def balance_data(images, labels, num_to_remove=5000):
     # balance data
 
     for j in range(num_to_remove):

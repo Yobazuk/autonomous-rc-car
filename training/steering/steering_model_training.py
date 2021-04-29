@@ -66,7 +66,7 @@ def main():
 
     model.compile(Adam(lr=0.0001), loss='mse', metrics=["accuracy"])
 
-    model.fit(ds_train, epochs=50, validation_data=ds_validate, verbose=1)
+    model.fit(ds_train, epochs=10, validation_data=ds_validate, verbose=1)
 
     if input('Save the model? (y/n): ').lower() == 'y':
         model.save('steering_model.h5')
