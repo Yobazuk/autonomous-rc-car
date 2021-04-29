@@ -57,14 +57,14 @@ def augment_image(image, label):
 def visualize_data(data):
     plt.hist(data['steering'], 30, color='#916cad', align='mid')
 
-    plt.axhline(300, color='#adf182', linewidth=3)
+    plt.axhline(900, color='#adf182', linewidth=3)
     plt.title('Data Visualization')
     plt.xlabel('Steering Angle')
     plt.ylabel('Number of Samples')
     plt.show()
 
 
-def balance_data(images, labels, num_to_remove=2900):
+def balance_data(images, labels, num_to_remove=5500):
     # balance data
 
     for j in range(num_to_remove):
