@@ -18,6 +18,7 @@ saved_steering_info = []
 collect_data = False
 collecting_data = False
 turn_sensitivity = config['turn_sensitivity']
+idle_throttle = config['idle_throttle']
 folder_count = 0
 
 
@@ -62,6 +63,8 @@ def main():
     while True:
         joystick_values = joystick.get_buttons()
 
+        throttle = joystick_values[config['drive_axis']]
+
         if joystick_values[PAUSE_DATASET_BTN]:
             collect_data = False
 
@@ -84,9 +87,10 @@ def main():
             _, frame = cam.read()
             save_frame(frame, os.path.join(path, (str(frame_count) + '.jpg')), joystick_values[config['turn_axis']])
             frame_count += 1
+            throttle = idle_throttle
 
-        motors.move(joystick_values[config['turn_axis']],
-                    (joystick_values[config['drive_axis']] * turn_sensitivity), 0.1)
+        motors.move(throttle,
+                    (joystick_values[config['turn_axis']] * turn_sensitivity), 0.1)
 
 
 if __name__ == '__main__':

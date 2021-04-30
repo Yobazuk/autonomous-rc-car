@@ -1,6 +1,7 @@
 
 {
   "turn_sensitivity": 0.7,
+  "idle_throttle": 0.3,
   "turn_axis": "axis3",
   "drive_axis": "axis2",
   "left_motor": {"motor_pin":  25, "forward_pin": 23, "backwards_pin":  24},
