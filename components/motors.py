@@ -74,23 +74,23 @@ class Motors:
     def move(self, speed=0, turn=0, t=0):
         speed *= 100
         turn *= 100
-        left_speed = -self.normalize((speed - turn), minimum=-100, maximum=100)
-        right_speed = -self.normalize((speed + turn), minimum=-100, maximum=100)
+        left_speed = self.normalize((speed + turn), minimum=-100, maximum=100)
+        right_speed = self.normalize((speed - turn), minimum=-100, maximum=100)
 
         self._motor1.change_duty_cycle(abs(left_speed))
         self._motor2.change_duty_cycle(abs(right_speed))
 
         # Control left motor
         if left_speed > 0:
-            self._motor1.go_backwards()
-        else:
             self._motor1.go_forward()
+        else:
+            self._motor1.go_backwards()
 
         # Control right motor
         if right_speed > 0:
-            self._motor2.go_backwards()
-        else:
             self._motor2.go_forward()
+        else:
+            self._motor2.go_backwards()
 
         sleep(t)
 
