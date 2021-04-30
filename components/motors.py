@@ -72,7 +72,7 @@ class Motors:
         sleep(t)
 
     def move(self, speed=0, turn=0, t=0):
-        speed *= 100
+        speed *= -100
         turn *= 100
         left_speed = self.normalize((speed + turn), minimum=-100, maximum=100)
         right_speed = self.normalize((speed - turn), minimum=-100, maximum=100)

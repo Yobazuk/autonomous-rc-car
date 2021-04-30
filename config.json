@@ -1,11 +1,11 @@
 
 {
   "turn_sensitivity": 0.7,
-  "idle_throttle": 0.3,
+  "idle_throttle": -0.3,
   "turn_axis": "axis3",
   "drive_axis": "axis2",
   "left_motor": {"motor_pin":  25, "forward_pin": 23, "backwards_pin":  24},
-  "right_motor": {"motor_pin":  22, "forward_pin": 27, "backwards_pin":  17},
+  "right_motor": {"motor_pin":  22, "forward_pin": 17, "backwards_pin":  27},
   "ultrasonic_sensor": {"trigger_pin":  15, "echo_pin":  14},
   "EXIT_BTN": "b",
   "PAUSE_MOTORS_BTN": "x",
