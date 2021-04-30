@@ -9,6 +9,11 @@ def read_image(path, label):
     image = tf.io.read_file(path)
     image = tf.io.decode_image(image, channels=3, dtype=tf.float32)
 
+    # image = cv2.imread(path)
+    # image = thresh(image)
+    # image = np.stack((image,)*3, axis=-1)
+    # image = image.astype(np.float32) / 255.0
+
     return image, label
 
 
@@ -82,3 +87,11 @@ def preprocess(image, label=0):
     image = tf.image.resize(image, (200, 66))
 
     return image, label
+
+
+def thresh(img):
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    lower_white = np.array([0, 0, 0])
+    upper_white = np.array([140, 255, 67])
+    masked_white = cv2.inRange(img, lower_white, upper_white)
+    return masked_white

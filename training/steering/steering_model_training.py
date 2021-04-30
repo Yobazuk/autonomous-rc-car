@@ -19,7 +19,7 @@ if len(physical_devices) > 0:
 
 def main():
 
-    dataset_path = r'C:\Users\yobaz\Desktop\dataset'
+    dataset_path = r'C:\Users\yobaz\Desktop\dataset_copy'
 
     df = []
 
@@ -46,7 +46,11 @@ def main():
     ds_train = ds_train.map(read_image).map(augment_image).map(preprocess).batch(2)
 
     ds_validate = tf.data.Dataset.from_tensor_slices((images_val, steering_val))
-    ds_validate = ds_validate.map(read_image).map(augment_image).map(preprocess).batch(2)
+    ds_validate = ds_validate.map(read_image).map(preprocess).batch(2)
+
+    # for img, st in ds_train:
+    #     plt.imshow(img)
+    #     plt.show()
 
     model = Sequential([
                         # Convolutional feature maps
@@ -66,11 +70,18 @@ def main():
 
     model.compile(Adam(lr=0.0001), loss='mse', metrics=["accuracy"])
 
-    model.fit(ds_train, epochs=10, validation_data=ds_validate, verbose=1)
+    history = model.fit(ds_train, epochs=10, validation_data=ds_validate, verbose=1)
 
     if input('Save the model? (y/n): ').lower() == 'y':
         model.save('steering_model.h5')
         print('model saved')
+
+        plt.plot(history.history['loss'])
+        plt.plot(history.history['val_loss'])
+        plt.legend(['Training', 'Validation'])
+        plt.title('Loss')
+        plt.xlabel('Epoch')
+        plt.show()
 
 
 if __name__ == '__main__':
