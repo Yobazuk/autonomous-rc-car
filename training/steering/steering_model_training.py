@@ -19,7 +19,7 @@ if len(physical_devices) > 0:
 
 def main():
 
-    dataset_path = r'C:\Users\yobaz\Desktop\dataset_copy'
+    dataset_path = r'C:\Users\yobaz\Desktop\dataset'
 
     df = []
 
