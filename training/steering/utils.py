@@ -84,7 +84,7 @@ def balance_data(images, labels, num_to_remove=1700):
 def preprocess(image, label=0):
     image = tf.image.crop_to_bounding_box(image, offset_height=232, offset_width=0,
                                           target_height=232, target_width=640)
-    image = tf.image.resize(image, (200, 66))
+    image = tf.image.resize(image, (66, 200))
 
     return image, label
 
