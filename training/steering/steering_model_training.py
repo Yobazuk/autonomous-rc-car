@@ -54,7 +54,7 @@ def main():
 
     model = Sequential([
                         # Convolutional feature maps
-                        Convolution2D(24, (5, 5), (2, 2), input_shape=(200, 66, 3), activation='elu'),
+                        Convolution2D(24, (5, 5), (2, 2), input_shape=(66, 200, 3), activation='elu'),
                         Convolution2D(36, (5, 5), (2, 2), activation='elu'),
                         Convolution2D(48, (5, 5), (2, 2), activation='elu'),
                         Convolution2D(64, (3, 3), activation='elu'),
