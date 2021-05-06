@@ -20,36 +20,21 @@ if len(physical_devices) > 0:
 def main():
 
     dataset_path = r'C:\Users\yobaz\Desktop\dataset_copy'
-    dataset_path1 = r'C:\Users\yobaz\Desktop\old_dataset_copy'
 
     df = []
-    df1 = []
 
     for directory in os.listdir(dataset_path):
         df.append(pd.read_csv(os.path.join(dataset_path, directory, 'data.csv')))
 
-    for directory in os.listdir(dataset_path1):
-        df1.append(pd.read_csv(os.path.join(dataset_path1, directory, 'data.csv')))
-
     df = pd.concat(df)
-    df1 = pd.concat(df1)
 
     visualize_data(df)
 
     image_paths = df['image_path'].values
     steering = df['steering'].values
 
-    image_paths1 = df1['image_path'].values
-    steering1 = df1['steering'].values
-
     for i in range(len(image_paths)):
         image_paths[i] = os.path.join(dataset_path, image_paths[i].split('/')[-2], image_paths[i].split('/')[-1])
-
-    for i in range(len(image_paths1)):
-        image_paths1[i] = os.path.join(dataset_path1, image_paths1[i].split('/')[-2], image_paths1[i].split('/')[-1])
-
-    image_paths = np.concatenate((image_paths, image_paths1))
-    steering = np.concatenate((steering, steering1))
 
     images_train, images_val, steering_train, steering_val = train_test_split(image_paths, steering,
                                                                               test_size=0.2, random_state=10)
@@ -65,6 +50,7 @@ def main():
     ds_validate = ds_validate.map(read_image).map(preprocess).batch(5)
 
     # for img, st in ds_train:
+    #     plt.title(st.numpy())
     #     plt.imshow(img)
     #     plt.show()
 
