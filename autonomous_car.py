@@ -1,3 +1,14 @@
+import argparse
+
+parser = argparse.ArgumentParser(description='Start autonomous RC car in driving or data collection mode')
+
+group = parser.add_mutually_exclusive_group(required=False)
+group.add_argument('-d', '--drive', action='store_true', dest='mode', help='Start car in driving mode')
+group.add_argument('-c', '--collect_data', action='store_false', dest='mode',
+                   help='Start car in data collection mode')
+parser.set_defaults(mode=True)
+args = parser.parse_args()
+
 from components.motors import Motors
 from components.joystick import Joystick
 from components.camera import Camera
@@ -9,16 +20,6 @@ import os
 import numpy as np
 from training.steering.utils import preprocess
 import tensorflow as tf
-import argparse
-
-parser = argparse.ArgumentParser(description='Start autonomous RC car in driving or data collection mode')
-
-group = parser.add_mutually_exclusive_group(required=False)
-group.add_argument('-d', '--drive', action='store_true', metavar='', dest='mode', help='Start car in driving mode')
-group.add_argument('-c', '--collect_data', action='store_false', metavar='', dest='mode',
-                   help='Start car in data collection mode')
-parser.set_defaults(mode=True)
-args = parser.parse_args()
 
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if len(physical_devices) > 0:
