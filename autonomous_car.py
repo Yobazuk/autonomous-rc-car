@@ -2,11 +2,13 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Start autonomous RC car in driving or data collection mode')
 
+parser.add_argument('-p', '--preview', action='store_true', dest='preview', help='Display camera feed')
+
 group = parser.add_mutually_exclusive_group(required=False)
 group.add_argument('-d', '--drive', action='store_true', dest='mode', help='Start car in driving mode')
 group.add_argument('-c', '--collect_data', action='store_false', dest='mode',
                    help='Start car in data collection mode')
-parser.set_defaults(mode=True)
+parser.set_defaults(mode=True, preview=False)
 args = parser.parse_args()
 
 from components.motors import Motors
@@ -61,7 +63,7 @@ class AutonomousCar:
         self.motors.start()
 
         while True:
-            frame = self.camera.get_frame()
+            frame = self.camera.get_frame(preview=args.preview)
 
             steering = self.predict_steering(frame)
             throttle = IDLE_THROTTLE
@@ -101,7 +103,7 @@ class AutonomousCar:
                 collecting_data = False
 
             if collecting_data:
-                frame = self.camera.get_frame()
+                frame = self.camera.get_frame(preview=args.preview)
                 data_collector.save_frame(frame, joystick_values[config['turn_axis']])
                 throttle = IDLE_THROTTLE
 
