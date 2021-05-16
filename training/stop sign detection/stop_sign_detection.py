@@ -3,12 +3,12 @@ import math
 
 
 def distance(area):
-    return ((2 * math.pow(10, -8)) * math.pow(area, 2)) - (0.0018 * area) + 54.335
+    return ((2 * math.pow(10, -8)) * math.pow(area, 2)) - (0.0016 * area) + 51.824
 
 
 def distance1(area):
-    return ((-6 * math.pow(10, -13)) * math.pow(area, 3)) + \
-           ((8 * math.pow(10, -8)) * math.pow(area, 2)) - (0.0031 * area) + 63.139
+    return ((-8 * math.pow(10, -13)) * math.pow(area, 3)) + \
+           ((9 * math.pow(10, -8)) * math.pow(area, 2)) - (0.0034 * area) + 64.113
 
 
 sign_cascade = cv2.CascadeClassifier('./stopsign_classifier.xml')
