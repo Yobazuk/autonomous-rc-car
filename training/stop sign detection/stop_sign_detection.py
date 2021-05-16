@@ -1,5 +1,9 @@
 import cv2
-from time import sleep
+import math
+
+
+def distance(area):
+    return ((2 * math.pow(10, -8)) * math.pow(area, 2)) - (0.0018 * area) + 54.335
 
 
 sign_cascade = cv2.CascadeClassifier('./stopsign_classifier.xml')
@@ -17,7 +21,7 @@ while True:
     for (x, y, w, h) in signs:
         cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
         area = w*h
-        print(area)
+        print(distance(area))
 
     cv2.imshow('original', frame)
     key = cv2.waitKey(1)
