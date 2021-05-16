@@ -6,6 +6,11 @@ def distance(area):
     return ((2 * math.pow(10, -8)) * math.pow(area, 2)) - (0.0018 * area) + 54.335
 
 
+def distance1(area):
+    return ((-6 * math.pow(10, -13)) * math.pow(area, 3)) + \
+           ((8 * math.pow(10, -8)) * math.pow(area, 2)) - (0.0031 * area) + 63.139
+
+
 sign_cascade = cv2.CascadeClassifier('./stopsign_classifier.xml')
 
 color = (150, 0, 0)
@@ -21,7 +26,7 @@ while True:
     for (x, y, w, h) in signs:
         cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
         area = w*h
-        print(distance(area))
+        print(distance1(area))
 
     cv2.imshow('original', frame)
     key = cv2.waitKey(1)
