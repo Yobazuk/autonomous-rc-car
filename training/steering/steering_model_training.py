@@ -1,14 +1,11 @@
 import os
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
-import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Convolution2D, Flatten, Dense
 from tensorflow.keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
-from utils import *
+from training.utilities.utils import *
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
