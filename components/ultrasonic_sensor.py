@@ -1,6 +1,8 @@
 import RPi.GPIO as GPIO
 import time
 
+TIMEOUT = 0.2   # [seconds]
+
 
 class UltrasonicSensor:
     def __init__(self, trigger_pin, echo_pin, speed_of_sound=34300):
@@ -28,12 +30,17 @@ class UltrasonicSensor:
         time.sleep(0.00001)
         GPIO.output(self._trig_pin, 0)
 
+        timeout_start = time.time()
         while GPIO.input(self._echo_pin) == 0:
-            pass
+            if time.time() >= timeout_start + TIMEOUT:
+                break
+
         start_time = time.time()
 
+        timeout_start = time.time()
         while GPIO.input(self._echo_pin) == 1:
-            pass
+            if time.time() >= timeout_start + TIMEOUT:
+                break
         stop_time = time.time()
 
         distance = (stop_time - start_time) * (self._speed_of_sound / 2)
