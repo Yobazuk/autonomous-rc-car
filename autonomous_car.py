@@ -16,11 +16,13 @@ from components.joystick import Joystick
 from components.camera import Camera
 from components.ultrasonic_sensor import UltrasonicSensor
 from components.data_collector import DataCollector
+from components.sign_detector import SignDetector
 import RPi.GPIO as gpio
+from time import sleep
 import json
 import os
 import numpy as np
-from training.steering.utils import preprocess
+from training.utilities.utils import preprocess, stop_sign_distance
 import tensorflow as tf
 
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
@@ -45,6 +47,8 @@ class AutonomousCar:
         self.ultrasonic_sensor = UltrasonicSensor(*config['ultrasonic_sensor'].values())
         self.joystick = None
 
+        self.stop_sign_detector = SignDetector(r'training/stop sign detection/stopsign_classifier.xml')
+
         if not args.mode:
             self.joystick = Joystick()
 
@@ -63,17 +67,30 @@ class AutonomousCar:
         self.motors.start()
 
         while True:
-            frame = self.camera.get_frame(preview=args.preview)
+            steering = 0
+            throttle = 0
 
-            steering = self.predict_steering(frame)
-            throttle = IDLE_THROTTLE
+            frame = self.camera.get_frame()
 
             if self.ultrasonic_sensor.measure_distance() <= 0.1:
                 throttle = 0
 
+            else:
+                frame, found_sign = self.stop_sign_detector.detect_signs(frame)
+
+                if found_sign:
+                    print('Found stop sign, waiting for 3 seconds')
+                    sleep(3)
+                    print('Resuming drive')
+                else:
+                    steering = self.predict_steering(frame)
+                    throttle = IDLE_THROTTLE
+
             print(f'Steering: {steering}')
 
             self.motors.move(throttle, (steering * TURN_SENSITIVITY), 0.1)
+
+            self.camera.show_frame(frame, preview=args.preview)
 
     def collect_dataset(self):
         print('Collecting dataset...')

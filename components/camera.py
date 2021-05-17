@@ -10,13 +10,17 @@ class Camera:
             ret, frame = self.cap.read()
             # frame = cv2.flip(frame, 1)
 
-            if preview:
-                cv2.imshow('Camera Feed', frame)
-                cv2.waitKey(1)
+            self.show_frame(frame, preview=preview)
 
             return frame
         except Exception as e:
             print(e)
+
+    @staticmethod
+    def show_frame(frame, preview=False):
+        if preview:
+            cv2.imshow('Camera Feed', frame)
+            cv2.waitKey(1)
 
     @staticmethod
     def exit():
