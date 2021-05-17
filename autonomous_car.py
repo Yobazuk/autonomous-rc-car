@@ -11,8 +11,9 @@ group.add_argument('-c', '--collect_data', action='store_false', dest='mode',
 parser.set_defaults(mode=True, preview=False)
 args = parser.parse_args()
 
+if not args.mode:
+    from components.joystick import Joystick
 from components.motors import Motors
-from components.joystick import Joystick
 from components.camera import Camera
 from components.ultrasonic_sensor import UltrasonicSensor
 from components.data_collector import DataCollector
@@ -72,7 +73,7 @@ class AutonomousCar:
 
             frame = self.camera.get_frame()
 
-            if self.ultrasonic_sensor.measure_distance() <= 0.1:
+            if self.ultrasonic_sensor.measure_distance() <= 15:
                 throttle = 0
 
             else:
@@ -87,7 +88,7 @@ class AutonomousCar:
                     steering = self.predict_steering(frame)
                     throttle = IDLE_THROTTLE
 
-            print(f'Steering: {steering}')
+            print(f'Throttle: {throttle}, Steering: {steering}')
 
             self.motors.move(throttle, (steering * TURN_SENSITIVITY), 0.1)
 
