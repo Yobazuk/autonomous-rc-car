@@ -22,7 +22,7 @@ from time import sleep
 import json
 import os
 import numpy as np
-from training.utilities.utils import preprocess, stop_sign_distance
+from training.utilities.utils import preprocess
 import tensorflow as tf
 
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
@@ -80,6 +80,7 @@ class AutonomousCar:
 
                 if found_sign:
                     print('Found stop sign, waiting for 3 seconds')
+                    self.motors.move(0, 0, 0.1)
                     sleep(3)
                     print('Resuming drive')
                 else:

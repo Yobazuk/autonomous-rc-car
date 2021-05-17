@@ -22,7 +22,11 @@ class SignDetector:
                         found = True
                         color = (0, 0, 150)
                     self.previous = True
+                else:
+                    self.previous = False
                 cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
+        else:
+            self.previous = False
 
         return frame, found
 
