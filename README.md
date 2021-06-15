@@ -16,6 +16,8 @@ In this project i've built an autonomous RC car with lane keeping capabilities u
 The lane keeping (or autonomous steering) and stop sign detection is implemented using only the camera.
 The front collision detection is implemented using an ultrasonic distance sensor.
 
+<img src="images/demo.gif" align="center" alt="steering demo">
+
 ## Usage
 ### Starting the car in autonomous driving mode
 ```python
