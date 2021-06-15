@@ -17,21 +17,18 @@ The lane keeping (or autonomous steering) and stop sign detection is implemented
 The front collision detection is implemented using an ultrasonic distance sensor.
 
 ## Usage
-Starting the car in autonomous driving mode
+### Starting the car in autonomous driving mode
 ```python
 $ python3 autonomous_car.py -d
 ```
-or
 ```python
 $ python3 autonomous_car.py --drive
 ```
 
-
-Starting the car in data collection mode
+### Starting the car in data collection mode
 ```python
 $ python3 autonomous_car.py -c
 ```
-or
 ```python
 $ python3 autonomous_car.py --collect_data
 ```
