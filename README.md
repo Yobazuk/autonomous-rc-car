@@ -2,7 +2,7 @@
 ## This is still a work in progress
 Autonomous rc car using neural networks
 
-![Car](https://www.tuningblog.eu/wp-content/uploads/2020/02/1969-Ford-Mustang-Hitman-Mach-1-Restomod-Tuning-Header.jpg)
+<img src="images/car.jpeg" align="center" width="500" alt="RC Car">
 
 ### Table Of Contents
 - [Description](#description)
@@ -11,7 +11,10 @@ Autonomous rc car using neural networks
 ---
 
 ## Description
-This is an autonomous rc car using neural networks
+In this project i've built an autonomous RC car with lane keeping capabilities using a CNN model, stop sign detection and front collision detection.
+
+The lane keeping (or autonomous steering) and stop sign detection is implemented using only the camera.
+The front collision detection is implemented using an ultrasonic distance sensor.
 
 ## Usage
 ```python
